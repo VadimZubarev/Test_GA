@@ -1,15 +1,14 @@
+from Counter import Counter
 import asyncio
 
-counter = 0
+class Robot:
+    is_running = False
 
-class RobotStatus:
-    running = False
-
-async def robot():
-    global counter
-    while RobotStatus.running:
-        print(counter)
-        counter += 1
-        await asyncio.sleep(1)
-
-robot_task = asyncio.create_task(robot())
+    async def increase_counter():
+        while Robot.is_running:
+            print(Counter.counter)
+            Counter.counter += 1
+            await asyncio.sleep(1)
+    
+    def get_robot_status():
+        return Robot.is_running
