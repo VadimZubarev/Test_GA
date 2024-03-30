@@ -1,30 +1,29 @@
 import uvicorn
 from fastapi import FastAPI
-from Robot import robot
-from Robot import RobotStatus
-from Robot import counter
+from Robot import Robot
+from Counter import Counter
 import asyncio
+
 
 app = FastAPI()
 
-@app.get("/robot/status")
-async def get_robot_status():
-    robot_status = RobotStatus.running
-    if robot_status:
-        robot_counter = await robot.counter
-        return {"status": robot_status, "counter": robot_counter}
-    else:
-        return {"status": robot_status}
+@app.get('/RobotStatus')
+async def get_status():
+    robot_status = Robot.get_robot_status()
+    print(Robot.get_robot_status())
+    return {"Robot status" : robot_status}
 
-@app.post("/robot/start")
-async def start_robot():
-    RobotStatus.running = True
-    await robot()
-    robot_counter = counter
-    return {"message": "Robot started"}
+@app.post('/StartRobot')
+async def start_robot(start_value: int = 0):
+    Counter.counter = start_value
+    Robot.is_running = True
+    await Robot.increase_counter()
+    return {"Satatus" : "Robot started"}
 
-@app.post("/robot/stop")
+@app.post('/StopRobot')
 async def stop_robot():
-    RobotStatus.running = False
-    return {"message": "Robot stopped"}
+    Robot.is_running = False
+    return {"Satatus" : "Robot stopped"}
 
+def load_server():
+    uvicorn.run("Fast_Api_Backend:app", host = '127.0.0.1', port = 8000, reload = True)
